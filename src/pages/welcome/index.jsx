@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import * as Animatable from "react-native-animatable";
 
 import { useNavigation } from "@react-navigation/native";
-import ButtonSwitch from "../../components/button/buttonSwitch";
+import ButtonSwitch from "../../components/button/buttonSwitchAcess";
 
 export default function Welcome() {
     const navigation = useNavigation();
