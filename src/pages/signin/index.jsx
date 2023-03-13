@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import {
     View,
     TextInput,
@@ -11,14 +12,26 @@ import { useNavigation } from "@react-navigation/native";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
+import axios from "axios";
 
 const schema = yup
     .object({
-        username: yup.string().required("informe seu usuario"),
-        email: yup
-            .string()
-            .email("email invalido")
-            .required("informe seu email"),
+        usernameOrEmail: yup.lazy((value) => {
+            if (value === undefined && value !== null && value !== "") {
+                return yup.string().required("Informe seu nome de usuário");
+            }
+            return yup.string();
+        }),
+        email: yup.lazy((value) => {
+            if (value !== undefined && value !== null && value !== "") {
+                return yup
+                    .string()
+                    .email("E-mail inválido")
+                    .required("Informe seu e-mail");
+            }
+            return yup.string();
+        }),
+
         password: yup
             .string()
             .min(6, "a senha deve ter no minimo 6 digitos")
@@ -27,6 +40,7 @@ const schema = yup
     .required();
 
 export default function Signin({ userType }) {
+    const [usernameOrEmailError, setUsernameOrEmailError] = useState(false);
     const {
         control,
         handleSubmit,
@@ -37,9 +51,39 @@ export default function Signin({ userType }) {
 
     const navigation = useNavigation(); // get the navigation object
 
-    const handleSignIn = () => {
-        // Authentication logic here
+    useEffect(() => {
+        if (errors.usernameOrEmail) {
+            setUsernameOrEmailError(true);
+        } else {
+            setUsernameOrEmailError(false);
+        }
+    }, [errors.usernameOrEmail]);
+
+    const handleSignIn = async (data) => {
+        if (!data.usernameOrEmail) {
+            setUsernameOrEmailError(true);
+            return;
+        }
+        // Adicione o userType ao objeto data
+        data.userType = userType;
+
+        try {
+            const response = await axios.post(
+                "http://192.168.1.13:3001/loginAcess",
+                data,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.log("erro");
+            console.error(error);
+        }
     };
+
     function handleRegisterClick() {
         console.log(userType);
         navigation.navigate("PageRegisterUser", { userType: userType });
@@ -52,23 +96,40 @@ export default function Signin({ userType }) {
                     Nome do usuario ou e-mail
                 </Text>
                 <Controller
-                    name="username"
+                    name="usernameOrEmail"
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            style={styles.inputForm}
-                            placeholder="Nome do usuario ou e-mail"
-                            value={value}
-                            onChangeText={onChange}
-                            onBlur={onBlur}
-                        />
+                        <View>
+                            <TextInput
+                                style={[
+                                    styles.inputForm,
+                                    (usernameOrEmailError ||
+                                        errors.usernameOrEmail) &&
+                                        styles.inputFormError,
+                                ]}
+                                placeholder="Nome do usuario ou e-mail"
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={() => {
+                                    onBlur();
+                                    if (!value) {
+                                        setUsernameOrEmailError(true);
+                                    } else {
+                                        setUsernameOrEmailError(false);
+                                    }
+                                }}
+                            />
+                            {(usernameOrEmailError ||
+                                errors.usernameOrEmail) && (
+                                <Text style={styles.labelError}>
+                                    {errors.usernameOrEmail
+                                        ? errors.usernameOrEmail?.message
+                                        : "Nome ou e-mail é obrigatório"}
+                                </Text>
+                            )}
+                        </View>
                     )}
                 />
-                {errors.username && (
-                    <Text style={styles.labelError}>
-                        {errors.username?.message}
-                    </Text>
-                )}
 
                 <Text style={styles.titleInputForm}>Senha</Text>
 
@@ -92,7 +153,7 @@ export default function Signin({ userType }) {
                     </Text>
                 )}
 
-                <Button title="Register" onPress={handleSubmit(handleSignIn)} />
+                <Button title="Login" onPress={handleSubmit(handleSignIn)} />
 
                 <View style={styles.registerTextContainer}>
                     <Text style={styles.registerText}>Não tem conta? </Text>
@@ -154,8 +215,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     registerLink: {
-        fontSize: 12,
-        fontWeight: "bold",
+        fontSize: 12.5,
         color: "blue",
+    },
+    inputFormError: {
+        borderBottomColor: "#ff375b",
+        borderBottomWidth: 1,
     },
 });

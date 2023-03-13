@@ -32,6 +32,8 @@ const schema = yup
 
 export default function RegisterUser({ userType }) {
     const [isRegistered, setIsRegistered] = useState(false);
+    const [establishmentError, setEstablishmentError] = useState(null);
+
     const navigation = useNavigation();
 
     const {
@@ -43,7 +45,12 @@ export default function RegisterUser({ userType }) {
     });
 
     const handleRegister = async (data) => {
-        console.log("teste");
+        if (!data.nameestablishment) {
+            setEstablishmentError("Informe o nome do seu estabelecimento");
+        } else {
+            setEstablishmentError(null);
+        }
+
         const userData = {
             email: data.email,
             username: data.username,
@@ -88,17 +95,30 @@ export default function RegisterUser({ userType }) {
                                 field: { onChange, onBlur, value },
                             }) => (
                                 <TextInput
-                                    style={styles.inputForm}
+                                    style={[
+                                        styles.inputForm,
+                                        establishmentError &&
+                                            styles.inputFormError,
+                                    ]}
                                     placeholder="nome do estabelecimento"
                                     value={value}
                                     onChangeText={onChange}
-                                    onBlur={onBlur}
+                                    onBlur={(e) => {
+                                        onBlur(e);
+                                        if (!value) {
+                                            setEstablishmentError(
+                                                "Informe o nome do seu estabelecimento"
+                                            );
+                                        } else {
+                                            setEstablishmentError(null);
+                                        }
+                                    }}
                                 />
                             )}
                         />
-                        {errors.nameestablishment && (
+                        {establishmentError && (
                             <Text style={styles.labelError}>
-                                {errors.nameestablishment?.message}
+                                {establishmentError}
                             </Text>
                         )}
                     </>
@@ -252,5 +272,8 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start",
         color: "#ff375b",
         marginBottom: 4,
+    },
+    inputFormError: {
+        borderBottomColor: "red",
     },
 });

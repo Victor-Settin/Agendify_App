@@ -14,7 +14,11 @@ export default function Welcome() {
                 <Animatable.Image
                     animation={"flipInY"}
                     source={require("./logo.png")}
-                    style={{ width: "100%" }}
+                    style={{
+                        width: "80%",
+                        height: "92%",
+                        borderRadius: 10,
+                    }}
                     resizeMode="contain"
                 />
                 <Text style={styles.titleWelcome}> Bem Vindo! </Text>
@@ -83,7 +87,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         textAlign: "center",
-        marginTop: 18,
+        marginTop: 0,
         color: "#fff",
     },
 });

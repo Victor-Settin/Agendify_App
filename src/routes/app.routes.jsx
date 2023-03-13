@@ -21,20 +21,20 @@ export default function Routes() {
             <Stack.Screen
                 name="SiginIn"
                 component={Signin}
-                options={{ headerShown: false }}
+                options={{ headerShown: true, title: "voltar" }}
             />
             {/* Page login Client */}
             <Stack.Screen
                 name="pageClient"
                 component={PageClient}
-                options={{ headerShown: false }}
+                options={{ headerShown: true, title: "voltar" }}
             />
 
             {/* Page login Professional */}
             <Stack.Screen
                 name="pageProfessional"
                 component={PageProfessional}
-                options={{ headerShown: true }}
+                options={{ headerShown: true, title: "voltar" }}
             />
             {/* Page RegisterUser */}
             <Stack.Screen
