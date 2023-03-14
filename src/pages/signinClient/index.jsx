@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import Signin from "../signin";
 

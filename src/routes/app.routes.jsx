@@ -2,9 +2,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Welcome from "../pages/welcome";
 import Signin from "../pages/signin";
-import PageProfessional from "../pages/acessProfessional";
-import PageClient from "../pages/acessClient";
 import PageRegisterUser from "../pages/registerUser/register";
+import PageClient from "../pages/signinClient";
+import PageProfessional from "../pages/signinProfessional";
+import HomeClient from "../pages/views/pagesClient/HomeClient";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,20 +28,25 @@ export default function Routes() {
             <Stack.Screen
                 name="pageClient"
                 component={PageClient}
-                options={{ headerShown: true, title: "voltar" }}
+                options={{ headerShown: true, title: "Login Cliente" }}
             />
-
             {/* Page login Professional */}
             <Stack.Screen
                 name="pageProfessional"
                 component={PageProfessional}
-                options={{ headerShown: true, title: "voltar" }}
+                options={{ headerShown: true, title: "Login Profissional" }}
             />
             {/* Page RegisterUser */}
             <Stack.Screen
                 name="PageRegisterUser"
                 component={PageRegisterUser}
                 options={{ headerShown: true }}
+            />
+            {/* Page homeClient */}
+            <Stack.Screen
+                name="homeClient"
+                component={HomeClient}
+                options={{ headerShown: true, title: "voltar" }}
             />
         </Stack.Navigator>
     );

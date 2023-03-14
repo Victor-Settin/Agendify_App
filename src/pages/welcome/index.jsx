@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import * as Animatable from "react-native-animatable";
 
 import { useNavigation } from "@react-navigation/native";
-import ButtonSwitch from "../../components/button/buttonSwitchAcess";
+import ButtonTypeUser from "../../components/button/buttonTypeUser";
 
 export default function Welcome() {
     const navigation = useNavigation();
@@ -31,23 +31,23 @@ export default function Welcome() {
             >
                 <Text style={styles.titleAcessLogin}> Acessar como: </Text>
 
-                <ButtonSwitch
+                <ButtonTypeUser
                     title="Professional"
                     onPress={() =>
                         navigation.navigate("pageProfessional", {
                             userType: "professional",
                         })
                     }
-                ></ButtonSwitch>
+                ></ButtonTypeUser>
 
-                <ButtonSwitch
+                <ButtonTypeUser
                     title="Client"
                     onPress={() =>
                         navigation.navigate("pageClient", {
                             userType: "client",
                         })
                     }
-                ></ButtonSwitch>
+                ></ButtonTypeUser>
 
                 <TouchableOpacity
                     onPress={() => navigation.navigate("SiginIn")}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import {
     View,
@@ -41,6 +42,10 @@ const schema = yup
 
 export default function Signin({ userType }) {
     const [usernameOrEmailError, setUsernameOrEmailError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [loginError, setLoginError] = useState(null);
+    const [loginSuccess, setLoginSuccess] = useState(null);
+
     const {
         control,
         handleSubmit,
@@ -78,12 +83,23 @@ export default function Signin({ userType }) {
                 }
             );
             console.log(response.data);
+            setLoginError(false);
+            setLoginSuccess(response.data.message);
+
+            const infoUser = response.data.user;
+
+            if (userType === "client") {
+                navigation.navigate("homeClient", {
+                    infoUserAll: infoUser,
+                });
+            }
         } catch (error) {
-            console.log("erro");
-            console.error(error);
+            error.response.status !== 200;
+            setLoginSuccess(false);
+            setLoginError(error.response.data.message);
+            return; // Para a execução da função
         }
     };
-
     function handleRegisterClick() {
         console.log(userType);
         navigation.navigate("PageRegisterUser", { userType: userType });
@@ -91,6 +107,16 @@ export default function Signin({ userType }) {
 
     return (
         <View style={styles.container}>
+            {loginError && (
+                <View style={styles.alertContainer}>
+                    <Text style={styles.alertText}>{loginError}</Text>
+                </View>
+            )}
+            {loginSuccess && (
+                <View style={styles.alertContainerSucess}>
+                    <Text style={styles.alertText}>{loginSuccess}</Text>
+                </View>
+            )}
             <View style={styles.form}>
                 <Text style={styles.titleInputForm}>
                     Nome do usuario ou e-mail
@@ -133,27 +159,44 @@ export default function Signin({ userType }) {
 
                 <Text style={styles.titleInputForm}>Senha</Text>
 
-                <Controller
-                    name="password"
-                    control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            style={styles.inputForm}
-                            placeholder="insira sua senha"
-                            value={value}
-                            onChangeText={onChange}
-                            onBlur={onBlur}
-                            secureTextEntry
+                <View style={styles.passwordInput}>
+                    <Controller
+                        name="password"
+                        control={control}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                style={styles.inputForm}
+                                placeholder="Insira sua senha"
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                                secureTextEntry={!showPassword}
+                            />
+                        )}
+                    />
+                    <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={styles.showPasswordButton}
+                    >
+                        <Icon
+                            name={showPassword ? "eye-slash" : "eye"}
+                            size={20}
+                            color="#A9A9A9"
                         />
-                    )}
-                />
+                    </TouchableOpacity>
+                </View>
+
                 {errors.password && (
                     <Text style={styles.labelError}>
                         {errors.password?.message}
                     </Text>
                 )}
 
-                <Button title="Login" onPress={handleSubmit(handleSignIn)} />
+                <Button
+                    title="Login"
+                    onPress={handleSubmit(handleSignIn)}
+                    style={styles.loginButton}
+                />
 
                 <View style={styles.registerTextContainer}>
                     <Text style={styles.registerText}>Não tem conta? </Text>
@@ -192,34 +235,74 @@ const styles = StyleSheet.create({
     inputForm: {
         borderBottomWidth: 1,
         height: 40,
+        width: "93%",
         marginBottom: 8,
-        fontSize: 16,
+        borderColor: "#cfcfcf",
+    },
+    inputFormError: {
+        borderColor: "red",
     },
     titleInputForm: {
-        fontSize: 20,
-        fontWeight: "bold",
+        fontSize: 16,
+        marginBottom: 4,
+        color: "#333333",
+    },
+    passwordInput: {
+        height: 40,
+        borderColor: "#cfcfcf",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    showPasswordButton: {
+        width: 30,
+        height: 40,
+        paddingRight: 0,
+        justifyContent: "center",
     },
     labelError: {
-        alignSelf: "flex-start",
-        color: "#ff375b",
-        marginBottom: 4,
+        color: "red",
+        fontSize: 12,
+        marginTop: 4,
     },
     registerTextContainer: {
         flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
+        justifyContent: "center",
         marginTop: 16,
-        width: "100%",
     },
     registerText: {
-        fontSize: 12,
+        fontSize: 14,
+        color: "#777",
     },
     registerLink: {
-        fontSize: 12.5,
-        color: "blue",
+        fontSize: 14,
+        color: "#3498db",
     },
-    inputFormError: {
-        borderBottomColor: "#ff375b",
-        borderBottomWidth: 1,
+    loginButton: {
+        backgroundColor: "red",
+        color: "white",
+        marginTop: 16,
+    },
+    alertContainer: {
+        backgroundColor: "#f44336",
+        padding: 8,
+        borderRadius: 8,
+        marginBottom: 16,
+    },
+    alertText: {
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    alertContainerSucess: {
+        backgroundColor: "blue",
+        padding: 8,
+        borderRadius: 8,
+        marginBottom: 16,
+    },
+    loginSucess: {
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
     },
 });
