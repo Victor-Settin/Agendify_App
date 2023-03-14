@@ -39,6 +39,9 @@ const schema = yup
     })
     .required();
 
+let typeInput = "";
+let resError = "";
+
 export default function RegisterUser() {
     const route = useRoute();
 
@@ -48,6 +51,7 @@ export default function RegisterUser() {
     const [isRegistered, setIsRegistered] = useState(false);
     const [establishmentError, setEstablishmentError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigation = useNavigation();
 
@@ -76,27 +80,30 @@ export default function RegisterUser() {
             userData.nameestablishment = data.nameestablishment;
         }
 
-        console.log(userData);
         try {
             const endpoint =
                 userType === "client" ? "clientes" : "profissionais";
-            console.log(userData);
             const response = await axios.post(
                 `http://192.168.1.13:3001/${endpoint}`,
                 userData
             );
+            typeInput = "";
+            resError = "";
             setIsRegistered(true);
         } catch (err) {
-            console.log("Error:", err.response.data);
-            const errorType = err.response.data.errorType;
+            typeInput = err.response.data.typeInput;
+            resError = err.response.data.errorMessage;
 
-            if (errorType === "email") {
-                console.log("Email already exists.");
-            } else if (errorType === "username") {
-                console.log("Username already exists.");
+            if (typeInput === "email") {
+                setErrorMessage(resError);
+            } else if (typeInput === "username") {
+                setErrorMessage(resError);
+            } else {
+                setErrorMessage("Error creating user.");
             }
         }
     };
+    console.log(typeInput, "e", resError);
 
     return (
         <View style={styles.container}>
@@ -141,7 +148,7 @@ export default function RegisterUser() {
                         )}
                     </>
                 )}
-                <Text style={styles.titleInputForm}>Seu nome</Text>
+                <Text style={styles.titleInputForm}>Seu nome {typeInput}</Text>
                 <Controller
                     name="username"
                     control={control}
@@ -155,6 +162,10 @@ export default function RegisterUser() {
                         />
                     )}
                 />
+                {errorMessage && typeInput === "username" && (
+                    <Text style={styles.labelError}>{errorMessage}</Text>
+                )}
+
                 {errors.username && (
                     <Text style={styles.labelError}>
                         {errors.username?.message}
@@ -174,6 +185,9 @@ export default function RegisterUser() {
                         />
                     )}
                 />
+                {errorMessage && typeInput === "email" && (
+                    <Text style={styles.labelError}>{errorMessage}</Text>
+                )}
                 {errors.email && (
                     <Text style={styles.labelError}>
                         {errors.email?.message}

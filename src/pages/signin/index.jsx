@@ -89,7 +89,7 @@ export default function Signin({ userType }) {
             const infoUser = response.data.user;
 
             if (userType === "client") {
-                navigation.navigate("homeClient", {
+                navigation.replace("homeClient", {
                     infoUserAll: infoUser,
                 });
             }
