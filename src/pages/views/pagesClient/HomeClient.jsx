@@ -36,7 +36,7 @@ export default function HomeClient({ route }) {
     return (
         <DrawerLayoutAndroid
             ref={drawerRef}
-            drawerWidth={200}
+            drawerWidth={250}
             drawerPosition="left"
             renderNavigationView={() => (
                 <MenuUser
