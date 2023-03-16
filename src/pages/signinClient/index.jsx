@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import Signin from "../signin";
+import Signin from "../../components/signin";
 
 const PageClient = () => {
     const route = useRoute();

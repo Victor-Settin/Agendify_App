@@ -84,7 +84,7 @@ export default function RegisterUser() {
             const endpoint =
                 userType === "client" ? "clientes" : "profissionais";
             const response = await axios.post(
-                `http://192.168.1.13:3001/${endpoint}`,
+                `https://server-agendify-appv2.onrender.com/${endpoint}`,
                 userData
             );
             typeInput = "";
@@ -103,7 +103,6 @@ export default function RegisterUser() {
             }
         }
     };
-    console.log(typeInput, "e", resError);
 
     return (
         <View style={styles.container}>

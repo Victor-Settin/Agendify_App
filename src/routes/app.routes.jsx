@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Welcome from "../pages/welcome";
-import Signin from "../pages/signin";
 import PageRegisterUser from "../pages/registerUser/register";
 import PageClient from "../pages/signinClient";
 import PageProfessional from "../pages/signinProfessional";
 import HomeClient from "../pages/views/pagesClient/HomeClient";
+import Signin from "../components/signin";
 
 const Stack = createNativeStackNavigator();
 
