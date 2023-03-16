@@ -74,7 +74,7 @@ export default function Signin({ userType }) {
 
         try {
             const response = await axios.post(
-                "https://server-agendify-appv2.onrender.com//loginAcess",
+                "https://server-agendify-appv2.onrender.com/loginAcess",
                 data,
                 {
                     headers: {
